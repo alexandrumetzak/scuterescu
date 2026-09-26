@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { read, exists, imgTags } from './helpers.mjs';
@@ -6,9 +7,11 @@ const PAGES = ['site/index.html', 'site/en/index.html'];
 
 test('every <img> exists and has alt, width, height', () => {
   for (const page of PAGES) {
+    const dir = path.dirname(page);
     for (const img of imgTags(read(page))) {
-      assert.ok(img.src?.startsWith('/'), `${page}: src must be root-relative: ${img.src}`);
-      assert.ok(exists(`site${img.src}`), `${page}: missing file site${img.src}`);
+      assert.ok(img.src && !img.src.startsWith('/'), `${page}: src must be relative, not root-relative: ${img.src}`);
+      const resolved = path.normalize(path.join(dir, img.src));
+      assert.ok(exists(resolved), `${page}: missing file ${resolved}`);
       assert.ok(img.alt && img.alt.length > 5, `${page}: alt missing for ${img.src}`);
       assert.ok(Number(img.width) > 0 && Number(img.height) > 0, `${page}: size missing for ${img.src}`);
     }

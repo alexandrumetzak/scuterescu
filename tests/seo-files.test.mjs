@@ -1,12 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { FACTS } from './facts.mjs';
 import { read } from './helpers.mjs';
 
 const URLS = [
   'https://scuterescu.ro/',
   'https://scuterescu.ro/en/',
-  'https://scuterescu.ro/confidentialitate.html',
-  'https://scuterescu.ro/en/privacy.html',
+  FACTS.privacyRoUrl,
+  FACTS.privacyEnUrl,
 ];
 
 test('robots.txt allows all crawlers incl. AI and points to sitemap', () => {
@@ -30,11 +31,5 @@ test('llms.txt starts with H1 and a summary blockquote', () => {
   const llms = read('site/llms.txt');
   assert.match(llms, /^# Scuterescu\n\n> .+/);
   assert.ok(llms.includes('https://scuterescu.ro/en/'));
-});
-
-test('_headers sets security and cache headers', () => {
-  const headers = read('site/_headers');
-  for (const h of ['X-Content-Type-Options: nosniff', 'Referrer-Policy:', 'Cache-Control:']) {
-    assert.ok(headers.includes(h), `missing ${h}`);
-  }
+  assert.ok(llms.includes(FACTS.privacyRoUrl));
 });

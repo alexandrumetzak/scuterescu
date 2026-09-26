@@ -45,11 +45,17 @@ export function checkHomePage(t, { file, lang, canonical, alternate, waLinks, fa
   });
 
   t.test('no third-party resources on load', () => {
-    const loads = [...html.matchAll(/<(?:script|link|img|iframe)\b[^>]*(?:src|href)="(https?:[^"]+)"/g)]
+    const loads = [...html.matchAll(/<(?:script|link|img|iframe)\b[^>]*(?:src|href)="(https?:[^"]+|\/\/[^"]+)"/g)]
       .map((m) => m[0])
       .filter((tag) => !/rel="(canonical|alternate)"/.test(tag));
     assert.deepEqual(loads, []);
     assert.ok(!html.includes('<iframe'), 'map must load on click only');
+  });
+
+  t.test('no root-relative references (GitHub Pages sub-path)', () => {
+    for (const attr of ['src="/', 'href="/', 'srcset="/', 'imagesrcset="/']) {
+      assert.ok(!html.includes(attr), `root-relative reference found: ${attr}`);
+    }
   });
 
   t.test('JSON-LD AutoRental and FAQPage', () => {
@@ -65,9 +71,15 @@ export function checkHomePage(t, { file, lang, canonical, alternate, waLinks, fa
     assert.equal(biz.parentOrganization.taxID, FACTS.cui);
     const hours = biz.openingHoursSpecification.map((h) => `${h.opens}-${h.closes}`).sort();
     assert.deepEqual(hours, ['09:00-19:00', '12:00-19:00']);
-    const prices = biz.makesOffer.map((o) => o.priceSpecification.price).sort((a, b) => a - b);
-    assert.deepEqual(prices, [70, 80, 300, 350]);
     for (const o of biz.makesOffer) assert.equal(o.priceSpecification.priceCurrency, 'RON');
+    for (const cc of Object.keys(FACTS.prices)) {
+      for (const [unit, unitCode] of [['day', 'DAY'], ['week', 'WEE']]) {
+        const matches = biz.makesOffer.filter((o) =>
+          o.itemOffered.name.includes(`${cc}cc`) && o.priceSpecification.unitCode === unitCode);
+        assert.equal(matches.length, 1, `expected exactly one ${cc}cc ${unitCode} offer`);
+        assert.equal(matches[0].priceSpecification.price, FACTS.prices[cc][unit], `${cc}cc ${unitCode} price mismatch`);
+      }
+    }
 
     const faq = graph.find((n) => n['@type'] === 'FAQPage');
     assert.ok(faq, 'FAQPage present');

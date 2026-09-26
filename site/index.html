@@ -21,11 +21,11 @@
   <meta property="og:locale" content="ro_RO">
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/assets/img/hero-800.webp" as="image" type="image/webp" imagesrcset="/assets/img/hero-800.webp 800w, /assets/img/hero.webp 1600w" imagesizes="100vw" fetchpriority="high">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/img/hero-800.webp" as="image" type="image/webp" imagesrcset="assets/img/hero-800.webp 800w, assets/img/hero.webp 1600w" imagesizes="100vw" fetchpriority="high">
+  <link rel="stylesheet" href="assets/css/style.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -88,7 +88,7 @@
 
   <header class="site-header">
     <div class="container site-header__inner">
-      <a class="logo" href="/">Scuterescu<span class="logo__dot">.</span></a>
+      <a class="logo" href="./">Scuterescu<span class="logo__dot">.</span></a>
       <nav class="nav" id="nav-main" aria-label="Meniu principal">
         <ul>
           <li><a href="#flota">Flotă</a></li>
@@ -98,7 +98,7 @@
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
-      <a class="lang-switch" href="/en/" hreflang="en" lang="en">EN</a>
+      <a class="lang-switch" href="en/" hreflang="en" lang="en">EN</a>
       <a class="btn btn--call btn--sm header-call" href="tel:+40756205206">Sună</a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-main">
         <span class="visually-hidden">Deschide meniul</span>
@@ -111,7 +111,7 @@
 
   <main id="continut">
     <section class="hero">
-      <img class="hero__img" src="/assets/img/hero-800.webp" srcset="/assets/img/hero-800.webp 800w, /assets/img/hero.webp 1600w" sizes="100vw" width="1600" height="900" alt="Scuter parcat pe o stradă din oraș" fetchpriority="high">
+      <img class="hero__img" src="assets/img/hero-800.webp" srcset="assets/img/hero-800.webp 800w, assets/img/hero.webp 1600w" sizes="100vw" width="1600" height="900" alt="Scuter parcat pe o stradă din oraș" fetchpriority="high">
       <div class="container hero__content">
         <h1>Închiriere scutere în Iași — de la 70 RON/zi</h1>
         <p class="hero__lead">Scutere SYM și Voge de 50cc și 125cc · RCA inclus · ridicare din Str. Al. O. Teodoreanu nr. 49</p>
@@ -140,7 +140,7 @@
           <li class="feature">
             <div class="feature__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg></div>
             <h3>Scutere verificate</h3>
-            <p>Modele SYM și Voge moderne, revizuite înainte de fiecare închiriere.</p>
+            <p>Modele SYM și Voge moderne, întreținute regulat.</p>
           </li>
           <li class="feature">
             <div class="feature__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div>
@@ -157,11 +157,11 @@
         <p class="section__lead">Două categorii de scutere, pentru oraș și pentru drumuri mai lungi.</p>
         <div class="cards">
           <article class="card">
-            <img class="card__img" src="/assets/img/scuter-50.webp" width="800" height="600" alt="Scuter de 50cc pentru închiriere în Iași" loading="lazy">
+            <img class="card__img" src="assets/img/scuter-50.webp" width="800" height="600" alt="Scuter de 50cc pentru închiriere în Iași" loading="lazy">
             <div class="card__body">
               <h3>Scuter 50cc</h3>
               <p class="card__models">SYM Jet 4 RX 50</p>
-              <p class="card__price"><strong>70 RON</strong>/zi · <strong>300 RON</strong>/săptămână</p>
+              <p class="card__price"><span class="nowrap"><strong>70 RON</strong>/zi</span> · <span class="nowrap"><strong>300 RON</strong>/săptămână</span></p>
               <ul class="card__meta">
                 <li>Garanție: 300 RON</li>
                 <li>Permis: categoria AM sau B</li>
@@ -171,11 +171,11 @@
             </div>
           </article>
           <article class="card">
-            <img class="card__img" src="/assets/img/scuter-125.webp" width="800" height="600" alt="Scuter de 125cc pentru închiriere în Iași" loading="lazy">
+            <img class="card__img" src="assets/img/scuter-125.webp" width="800" height="600" alt="Scuter de 125cc pentru închiriere în Iași" loading="lazy">
             <div class="card__body">
               <h3>Scuter 125cc</h3>
               <p class="card__models">SYM Jet 4 RX 125 · Voge SR125 ADV</p>
-              <p class="card__price"><strong>80 RON</strong>/zi · <strong>350 RON</strong>/săptămână</p>
+              <p class="card__price"><span class="nowrap"><strong>80 RON</strong>/zi</span> · <span class="nowrap"><strong>350 RON</strong>/săptămână</span></p>
               <ul class="card__meta">
                 <li>Garanție: 350 RON</li>
                 <li>Permis: categoria A1 sau A</li>
@@ -258,7 +258,7 @@
           <address>
             <strong>Scuterescu</strong><br>
             Str. Al. O. Teodoreanu nr. 49<br>
-            Iași 700154, România<br>
+            700154 Iași, România<br>
             Telefon și WhatsApp: <a href="tel:+40756205206">+40&nbsp;756&nbsp;205&nbsp;206</a>
           </address>
           <table class="hours">
@@ -284,9 +284,8 @@
     <div class="container">
       <p>Scuterescu este un brand METZ CARS SRL · CUI RO42088025 · © <span data-year>2026</span></p>
       <ul>
-        <li><a href="/confidentialitate.html">Politica de confidențialitate</a></li>
-        <li><a href="https://anpc.ro/" rel="noopener">ANPC</a></li>
-        <li><a href="https://ec.europa.eu/consumers/odr" rel="noopener">Soluționarea online a litigiilor (SOL)</a></li>
+        <li><a href="confidentialitate">Politica de confidențialitate</a></li>
+        <li><a href="https://anpc.ro/ce-este-sal/" rel="noopener">ANPC – SAL</a></li>
       </ul>
     </div>
   </footer>
@@ -296,6 +295,6 @@
     <a class="btn btn--wa" href="https://wa.me/40756205206?text=Bun%C4%83!%20A%C8%99%20dori%20s%C4%83%20%C3%AEnchiriez%20un%20scuter.%20Perioada%3A%20">WhatsApp</a>
   </div>
 
-  <script src="/assets/js/main.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>

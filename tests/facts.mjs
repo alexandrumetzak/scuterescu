@@ -5,6 +5,8 @@ export const FACTS = {
   cui: 'RO42088025',
   baseUrl: 'https://scuterescu.ro/',
   enUrl: 'https://scuterescu.ro/en/',
+  privacyRoUrl: 'https://scuterescu.ro/confidentialitate',
+  privacyEnUrl: 'https://scuterescu.ro/en/privacy',
   phoneE164: '+40756205206',
   phoneDisplay: '+40 756 205 206',
   waBase: 'https://wa.me/40756205206',

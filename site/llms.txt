@@ -32,7 +32,7 @@ Scuterescu este un brand METZ CARS SRL, CUI RO42088025.
 
 - [Pagina principală (RO)](https://scuterescu.ro/): flotă, prețuri, condiții, întrebări frecvente, contact.
 - [Home page (EN)](https://scuterescu.ro/en/): fleet, prices, conditions, FAQ, contact.
-- [Politica de confidențialitate](https://scuterescu.ro/confidentialitate.html)
+- [Politica de confidențialitate](https://scuterescu.ro/confidentialitate)
 
 ## English summary
 

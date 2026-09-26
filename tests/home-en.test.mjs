@@ -6,7 +6,7 @@ test('EN home page', (t) => checkHomePage(t, {
   file: 'site/en/index.html',
   lang: 'en',
   canonical: FACTS.enUrl,
-  alternate: '/',
+  alternate: '../',
   faqCount: 10,
   waLinks: [
     'https://wa.me/40756205206?text=Hi!%20I%20would%20like%20to%20rent%20a%20scooter.%20Period%3A%20',
