@@ -25,13 +25,32 @@ Update **all** of these, then run `npm test` (it fails if they disagree):
 
 Put new JPEGs in `images-src/` (`hero.jpg`, `scuter-50.jpg`, `scuter-125.jpg`), run `npm run images`, update `site/assets/img/CREDITS.md`.
 
-## Deploy (Cloudflare Pages)
+## Deploy (GitHub Pages)
 
-1. Push this repository to GitHub.
-2. Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → pick the repo.
-3. Build command: *(empty)*. Build output directory: `site`.
-4. Custom domains → add `scuterescu.ro` and `www.scuterescu.ro`; follow the DNS instructions (redirect `www` to the apex).
-5. After the first deploy: submit `https://scuterescu.ro/sitemap.xml` in Google Search Console and Bing Webmaster Tools. Also run https://search.google.com/test/rich-results on `https://scuterescu.ro/` to confirm the structured data renders correctly in production.
+Pushes to `main` deploy automatically via `.github/workflows/pages.yml` (runs `npm ci && npm test && npm run validate`, then publishes `site/` with GitHub Pages).
+
+Site URL: `https://alexandrumetzak.github.io/scuterescu/`.
+
+### Custom domain (`scuterescu.ro`)
+
+Once the owner is ready to point the domain at GitHub Pages:
+
+1. **DNS at the registrar** — apex `A` records:
+   - `185.199.108.153`
+   - `185.199.109.153`
+   - `185.199.110.153`
+   - `185.199.111.153`
+
+   Optionally `AAAA` records:
+   - `2606:50c0:8000::153`
+   - `2606:50c0:8001::153`
+   - `2606:50c0:8002::153`
+   - `2606:50c0:8003::153`
+
+   And a `www` `CNAME` → `alexandrumetzak.github.io`.
+2. Add a file `site/CNAME` containing `scuterescu.ro`, then push.
+3. Repo Settings → Pages → Custom domain → `scuterescu.ro`. Tick "Enforce HTTPS" once the certificate is issued. GitHub redirects `www` to the apex automatically.
+4. Submit `https://scuterescu.ro/sitemap.xml` in Google Search Console. Also run https://search.google.com/test/rich-results on `https://scuterescu.ro/` to confirm the structured data renders correctly in production.
 
 ## Owner to-do (outside the code)
 

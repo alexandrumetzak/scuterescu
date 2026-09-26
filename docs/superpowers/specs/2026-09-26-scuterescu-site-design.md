@@ -32,7 +32,7 @@ Site de prezentare pentru închiriere scutere în Iași. O singură pagină atra
 
 ## Arhitectură
 
-Site static HTML/CSS + JS minimal, fără framework și fără pas de build. Găzduit pe Cloudflare Pages (gratuit, HTTPS), cu domeniul legat prin DNS.
+Site static HTML/CSS + JS minimal, fără framework și fără pas de build. Găzduit pe GitHub Pages (gratuit, HTTPS), deploy automat printr-un workflow GitHub Actions (`.github/workflows/pages.yml`) care rulează testele și publică directorul `site/`; URL-uri curate (fără `.html`), fără `_headers` (specific Cloudflare).
 
 ```
 index.html                 RO — canonical https://scuterescu.ro/
