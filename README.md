@@ -16,14 +16,22 @@ Everything deployable is in `site/`. No build step.
 
 Update **all** of these, then run `npm test` (it fails if they disagree):
 
-- `site/index.html` — visible text + JSON-LD (`makesOffer`, `openingHoursSpecification`, FAQ answers)
+- `site/assets/js/pricing.js` — tariffs, extras and deposits, and the WhatsApp messages; the booking form and the package buttons on both home pages use it
+- `site/index.html` — visible text + JSON-LD (`makesOffer`, `openingHoursSpecification`, FAQ answers) + package button URLs
 - `site/en/index.html` — same, in English
+
+  Regenerate the package button WhatsApp links with:
+
+      node -e "import('./site/assets/js/pricing.js').then(p => console.log(['1-2','3-6','7+'].map(t => p.waLink(p.buildPackageMessage('ro', t))).join('\n')))"
+
+  (swap `'ro'` for `'en'` to regenerate the English home page's links)
+
 - `site/llms.txt`
 - `tests/facts.mjs`
 
 ## Replace photos
 
-Put new JPEGs in `images-src/` (`hero.jpg`, `scuter-50.jpg`, `scuter-125.jpg`), run `npm run images`, update `site/assets/img/CREDITS.md`.
+Put the owner's design files (numbered JPEGs — hero photo, fleet mockup, logo artwork) in `images-src/design/`, matching the filenames `scripts/optimize-images.mjs` and `scripts/build-logo.mjs` expect, then run `npm run images` (and `npm run logo` if the logo artwork changed).
 
 ## Deploy (GitHub Pages)
 

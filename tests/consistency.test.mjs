@@ -4,8 +4,7 @@ import { FACTS } from './facts.mjs';
 import { read, text } from './helpers.mjs';
 
 // Prices, hours and contact data must be identical everywhere they appear.
-// llms.txt re-added in Task 5
-const FILES = ['site/index.html', 'site/en/index.html'];
+const FILES = ['site/index.html', 'site/en/index.html', 'site/llms.txt'];
 const REQUIRED = [
   FACTS.phoneDisplay, FACTS.street, FACTS.company, FACTS.cui, FACTS.city, ...FACTS.models,
   ...Object.values(FACTS.tiers).flatMap((x) => [`${x['50']} RON`, `${x['125']} RON`]),
