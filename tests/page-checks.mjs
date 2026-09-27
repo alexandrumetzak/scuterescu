@@ -113,6 +113,15 @@ export function checkHomePage(t, { file, lang, canonical, alternate, waLinks, fa
       }
     }
 
+    if (lang === 'en') {
+      for (const o of biz.makesOffer) {
+        for (const bad of ['Scuter', 'zile', ' sau ']) {
+          assert.ok(!o.name.includes(bad), `offer name "${o.name}" contains untranslated "${bad}"`);
+          assert.ok(!o.itemOffered.name.includes(bad), `itemOffered name "${o.itemOffered.name}" contains untranslated "${bad}"`);
+        }
+      }
+    }
+
     const faq = graph.find((n) => n['@type'] === 'FAQPage');
     assert.ok(faq, 'FAQPage present');
     assert.equal(faq.mainEntity.length, faqCount);
