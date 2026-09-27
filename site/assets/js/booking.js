@@ -51,11 +51,10 @@ if (form) {
 
   // The user's own phone-holder choice, tracked separately from the checkbox's
   // displayed state so that an auto-check at 7+ days doesn't stick once the
-  // period shortens back below 7 days.
+  // period shortens back below 7 days. Must be updated from the checkbox
+  // BEFORE render() runs on the same event, otherwise render() overwrites the
+  // just-clicked checkbox with the stale phoneHolderChosen value.
   let phoneHolderChosen = phoneHolderBox.checked;
-  phoneHolderBox.addEventListener('change', () => {
-    if (!phoneHolderBox.disabled) phoneHolderChosen = phoneHolderBox.checked;
-  });
 
   const values = () => ({
     category: $('[name="category"]:checked').value,
@@ -117,7 +116,8 @@ if (form) {
     input.setAttribute('aria-describedby', 'booking-error');
   };
 
-  form.addEventListener('input', () => {
+  form.addEventListener('input', (e) => {
+    if (e.target === phoneHolderBox && !phoneHolderBox.disabled) phoneHolderChosen = phoneHolderBox.checked;
     out.error.textContent = '';
     clearFieldError(startInput);
     clearFieldError(endInput);
