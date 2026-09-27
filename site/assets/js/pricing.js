@@ -71,6 +71,8 @@ export function tierFor(days) {
 }
 
 export function quote({ category, days, extraHelmet = false, phoneHolder = false }) {
+  if (!CATEGORIES[category]) throw new RangeError(`Unknown category: ${category}`);
+  if (!Number.isInteger(days) || days < 1) throw new RangeError(`Invalid rental days: ${days}`);
   const tier = tierFor(days);
   const rate = tier.rates[category];
   const phoneHolderIncluded = days >= PHONE_HOLDER_FREE_FROM_DAYS;

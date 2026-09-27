@@ -117,3 +117,10 @@ test('package messages RO and EN', () => {
 test('waLink encodes the message for wa.me', () => {
   assert.equal(waLink('Bună! a&b\nc'), 'https://wa.me/40756205206?text=Bun%C4%83!%20a%26b%0Ac');
 });
+
+test('invalid input fails with a clear RangeError', () => {
+  assert.throws(() => quote({ category: '50', days: 0 }), RangeError);
+  assert.throws(() => quote({ category: '50', days: null }), RangeError);
+  assert.throws(() => quote({ category: '250', days: 3 }), RangeError);
+  assert.throws(() => buildBookingMessage('ro', { category: '50', start: '2026-07-08', end: '2026-07-01' }), RangeError);
+});
