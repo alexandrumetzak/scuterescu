@@ -20,7 +20,7 @@ test('facts use comma-below diacritics', () => {
 
 test('css defines color tokens and no external imports', () => {
   const css = read('site/assets/css/style.css');
-  for (const token of ['--color-btn: #C2410C', '--color-accent: #EA580C', '--color-wa: #075E54', '--color-text: #1C1917', '--color-bg: #FFFBF5']) {
+  for (const token of ['--color-btn: #C2410C', '--color-accent: #F97316', '--color-muted: #A8A29E', '--color-text: #F5F5F4', '--color-bg: #111113']) {
     assert.ok(css.includes(token), `missing ${token}`);
   }
   assert.ok(!/@import|https?:\/\//.test(css), 'css must not load external resources');

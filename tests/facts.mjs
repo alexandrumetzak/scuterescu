@@ -16,11 +16,13 @@ export const FACTS = {
   lat: 47.1456874,
   lng: 27.6050934,
   hours: { weekdays: ['09:00', '19:00'], weekend: ['12:00', '19:00'] },
-  models: ['SYM Jet 4 RX 50', 'SYM Jet 4 RX 125', 'Voge SR125 ADV'],
-  prices: {
-    '50': { day: 70, week: 300, deposit: 300 },
-    '125': { day: 80, week: 350, deposit: 350 },
+  models: ['SYM Jet 4 RX', 'SYM Jet 4 RX 125', 'Voge SR125 ADV'],
+  tiers: {
+    '1-2': { '50': 90, '125': 100, minDays: 1, maxDays: 2 },
+    '3-6': { '50': 79, '125': 89, minDays: 3, maxDays: 6 },
+    '7+': { '50': 45, '125': 50, minDays: 7, maxDays: null },
   },
-  helmetDay: 10,
+  deposits: { '50': 300, '125': 350 },
+  extras: { helmet: 20, phoneHolder: 10 },
   minAge: 18,
 };

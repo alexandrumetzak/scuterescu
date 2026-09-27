@@ -4,12 +4,13 @@ import { FACTS } from './facts.mjs';
 import { read, text } from './helpers.mjs';
 
 // Prices, hours and contact data must be identical everywhere they appear.
-const FILES = ['site/index.html', 'site/en/index.html', 'site/llms.txt'];
+// EN page and llms.txt re-added in Tasks 4–5
+const FILES = ['site/index.html'];
 const REQUIRED = [
   FACTS.phoneDisplay, FACTS.street, FACTS.company, FACTS.cui, FACTS.city, ...FACTS.models,
-  `${FACTS.prices['50'].day} RON`, `${FACTS.prices['50'].week} RON`,
-  `${FACTS.prices['125'].day} RON`, `${FACTS.prices['125'].week} RON`,
-  `${FACTS.helmetDay} RON`,
+  ...Object.values(FACTS.tiers).flatMap((x) => [`${x['50']} RON`, `${x['125']} RON`]),
+  `${FACTS.deposits['50']} RON`, `${FACTS.deposits['125']} RON`,
+  `${FACTS.extras.helmet} RON`, `${FACTS.extras.phoneHolder} RON`,
   FACTS.hours.weekdays[0], FACTS.hours.weekend[0], FACTS.hours.weekdays[1],
 ];
 

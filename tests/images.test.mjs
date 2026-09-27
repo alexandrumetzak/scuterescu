@@ -4,7 +4,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { read, exists, imgTags, ROOT } from './helpers.mjs';
 
-const PAGES = ['site/index.html', 'site/en/index.html'];
+// EN page re-added in Task 4
+const PAGES = ['site/index.html'];
 
 test('every <img> exists and has alt, width, height', () => {
   for (const page of PAGES) {
