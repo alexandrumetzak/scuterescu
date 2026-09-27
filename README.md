@@ -1,7 +1,8 @@
 # scuterescu.ro
 
 Static site for Scuterescu — scooter rental in Iași (brand of METZ CARS SRL).
-Design spec: `docs/superpowers/specs/2026-09-26-scuterescu-site-design.md`.
+Design specs: `docs/superpowers/specs/2026-09-26-scuterescu-site-design.md` (initial site) and
+`docs/superpowers/specs/2026-09-27-scuterescu-redesign-design.md` (dark redesign, tier pricing and booking form).
 
 Everything deployable is in `site/`. No build step.
 
