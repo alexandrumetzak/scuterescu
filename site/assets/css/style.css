@@ -104,8 +104,8 @@ p { margin: 0 0 1em; }
 .btn:hover { transform: translateY(-1px); }
 .btn--call { background: var(--color-btn); color: #fff; }
 .btn--call:hover { background: var(--color-btn-hover); }
-.btn--wa { background: transparent; color: #fff; border-color: rgb(255 255 255 / .25); }
-.btn--wa:hover { border-color: rgb(255 255 255 / .5); background: rgb(255 255 255 / .06); }
+.btn--wa { background: transparent; color: #fff; border-color: #25D366; }
+.btn--wa:hover { border-color: #25D366; background: rgb(37 211 102 / .12); }
 .btn--ghost { background: transparent; color: var(--color-text); border-color: rgb(255 255 255 / .25); }
 .btn--ghost:hover { border-color: rgb(255 255 255 / .5); }
 .btn--sm { min-height: 40px; padding: 8px 18px; font-size: .9rem; }
