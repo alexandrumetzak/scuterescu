@@ -1,20 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { FACTS } from './facts.mjs';
 import {
   PHONE_WA, CATEGORIES, TIERS, EXTRAS, rentalDays, tierFor, quote, tierLabel,
   buildBookingMessage, buildPackageMessage, waLink,
 } from '../site/assets/js/pricing.js';
 
 test('tariff table matches the owner price list', () => {
-  assert.deepEqual(TIERS.map((t) => [t.id, t.minDays, t.maxDays, t.rates['50'], t.rates['125']]), [
-    ['1-2', 1, 2, 90, 100],
-    ['3-6', 3, 6, 79, 89],
-    ['7+', 7, null, 45, 50],
-  ]);
-  assert.deepEqual(EXTRAS, { helmet: 20, phoneHolder: 10 });
-  assert.equal(CATEGORIES['50'].deposit, 300);
-  assert.equal(CATEGORIES['125'].deposit, 350);
-  assert.equal(PHONE_WA, '40756205206');
+  assert.deepEqual(
+    TIERS.map((t) => [t.id, t.minDays, t.maxDays, t.rates['50'], t.rates['125']]),
+    Object.entries(FACTS.tiers).map(([id, t]) => [id, t.minDays, t.maxDays, t['50'], t['125']]),
+  );
+  assert.deepEqual(EXTRAS, FACTS.extras);
+  assert.equal(CATEGORIES['50'].deposit, FACTS.deposits['50']);
+  assert.equal(CATEGORIES['125'].deposit, FACTS.deposits['125']);
+  assert.equal(PHONE_WA, FACTS.phoneE164.replace('+', ''));
 });
 
 test('rentalDays counts calendar days, minimum 1, null when invalid', () => {

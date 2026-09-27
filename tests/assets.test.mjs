@@ -38,3 +38,8 @@ test('main.js is valid JS and handles menu, map and year', () => {
     assert.ok(js.includes(s), `main.js missing ${s}`);
   }
 });
+
+test('booking.js and pricing.js are valid JS', () => {
+  execFileSync(process.execPath, ['--check', 'site/assets/js/booking.js']);
+  execFileSync(process.execPath, ['--check', 'site/assets/js/pricing.js']);
+});
