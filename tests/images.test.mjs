@@ -20,8 +20,8 @@ test('every <img> exists and has alt, width, height', () => {
 
 test('design assets exist', () => {
   for (const f of ['site/assets/img/hero.webp', 'site/assets/img/hero-800.webp', 'site/assets/img/fleet-50.webp',
-    'site/assets/img/fleet-125.webp', 'site/assets/img/logo.svg', 'site/og-image.jpg', 'site/favicon.svg',
-    'site/apple-touch-icon.png']) {
+    'site/assets/img/fleet-125.webp', 'site/assets/img/logo.svg', 'site/assets/img/logo-icon.svg', 'site/og-image.jpg',
+    'site/favicon.svg', 'site/apple-touch-icon.png']) {
     assert.ok(exists(f), `missing ${f}`);
   }
 });
@@ -31,6 +31,7 @@ test('logo is an accessible SVG without external references', () => {
   assert.match(svg, /^<svg[^>]*viewBox="/);
   assert.ok(svg.includes('<title>Scuterescu</title>'));
   assert.ok(svg.includes('#F97316'));
+  assert.ok(!svg.includes('<text'), 'wordmark must be outlined paths, not <text>');
   assert.ok(!/https?:\/\/(?!www\.w3\.org)/.test(svg), 'no external references');
 });
 
