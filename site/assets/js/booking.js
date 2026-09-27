@@ -43,18 +43,28 @@ if (form) {
     error: document.getElementById('booking-error'),
   };
   const phoneHolderBox = $('[name="phoneHolder"]');
+  const startInput = $('[name="start"]');
+  const endInput = $('[name="end"]');
   const today = new Date().toISOString().slice(0, 10);
-  $('[name="start"]').min = today;
-  $('[name="end"]').min = today;
+  startInput.min = today;
+  endInput.min = today;
+
+  // The user's own phone-holder choice, tracked separately from the checkbox's
+  // displayed state so that an auto-check at 7+ days doesn't stick once the
+  // period shortens back below 7 days.
+  let phoneHolderChosen = phoneHolderBox.checked;
+  phoneHolderBox.addEventListener('change', () => {
+    if (!phoneHolderBox.disabled) phoneHolderChosen = phoneHolderBox.checked;
+  });
 
   const values = () => ({
     category: $('[name="category"]:checked').value,
-    start: $('[name="start"]').value,
-    end: $('[name="end"]').value,
+    start: startInput.value,
+    end: endInput.value,
     pickupTime: $('[name="pickupTime"]').value,
     returnTime: $('[name="returnTime"]').value,
     extraHelmet: $('[name="extraHelmet"]').checked,
-    phoneHolder: phoneHolderBox.checked,
+    phoneHolder: phoneHolderChosen,
     name: $('[name="name"]').value,
   });
 
@@ -77,11 +87,17 @@ if (form) {
       out.extras.textContent = '–';
       out.total.textContent = '–';
       phoneHolderBox.disabled = false;
+      phoneHolderBox.checked = phoneHolderChosen;
       return;
     }
     const q = quote({ category: v.category, days, extraHelmet: v.extraHelmet, phoneHolder: v.phoneHolder });
-    phoneHolderBox.disabled = q.phoneHolderIncluded;
-    if (q.phoneHolderIncluded) phoneHolderBox.checked = true;
+    if (q.phoneHolderIncluded) {
+      phoneHolderBox.checked = true;
+      phoneHolderBox.disabled = true;
+    } else {
+      phoneHolderBox.disabled = false;
+      phoneHolderBox.checked = phoneHolderChosen;
+    }
     const extras = [];
     if (v.extraHelmet) extras.push(`${T.helmet} (+${EXTRAS.helmet} RON)`);
     if (q.phoneHolderIncluded) extras.push(`${T.phoneHolder} (${T.included})`);
@@ -92,8 +108,19 @@ if (form) {
     out.total.textContent = `${q.total} RON`;
   };
 
+  const clearFieldError = (input) => {
+    input.removeAttribute('aria-invalid');
+    input.removeAttribute('aria-describedby');
+  };
+  const markFieldError = (input) => {
+    input.setAttribute('aria-invalid', 'true');
+    input.setAttribute('aria-describedby', 'booking-error');
+  };
+
   form.addEventListener('input', () => {
     out.error.textContent = '';
+    clearFieldError(startInput);
+    clearFieldError(endInput);
     render();
   });
 
@@ -102,8 +129,18 @@ if (form) {
     const v = values();
     const error = validate(v);
     out.error.textContent = error;
+    clearFieldError(startInput);
+    clearFieldError(endInput);
     if (error) {
-      $(v.start ? '[name="end"]' : '[name="start"]').focus();
+      let focusTarget;
+      if (!v.start) { markFieldError(startInput); focusTarget = startInput; }
+      if (!v.end) { markFieldError(endInput); focusTarget = focusTarget || endInput; }
+      if (v.start && v.end) {
+        const field = v.start < today ? startInput : endInput;
+        markFieldError(field);
+        focusTarget = field;
+      }
+      focusTarget.focus();
       return;
     }
     window.open(waLink(buildBookingMessage(lang, v)), '_blank', 'noopener');
