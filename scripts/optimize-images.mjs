@@ -1,26 +1,24 @@
-// Converts raw photos from images-src/ into optimized site images.
+// Builds site images from the owner's design files in images-src/design/.
 import sharp from 'sharp';
 import { mkdirSync } from 'node:fs';
 
-const SRC = 'images-src';
+const SRC = 'images-src/design';
 const OUT = 'site/assets/img';
 mkdirSync(OUT, { recursive: true });
 
-const jobs = [
-  { input: 'hero.jpg', output: 'hero.webp', width: 1600, height: 900 },
-  { input: 'hero.jpg', output: 'hero-800.webp', width: 800, height: 450 },
-  { input: 'scuter-50.jpg', output: 'scuter-50.webp', width: 800, height: 600 },
-  { input: 'scuter-125.jpg', output: 'scuter-125.webp', width: 800, height: 600 },
-];
+// Hero: owner photo (scooters in front of the Palace of Culture), 1024×572 original — never upscale.
+await sharp(`${SRC}/2.jpg`).webp({ quality: 80 }).toFile(`${OUT}/hero.webp`);
+await sharp(`${SRC}/2.jpg`).resize(800).webp({ quality: 78 }).toFile(`${OUT}/hero-800.webp`);
+await sharp(`${SRC}/2.jpg`).resize(1200, 630, { fit: 'cover' }).jpeg({ quality: 82 }).toFile('site/og-image.jpg');
 
-for (const job of jobs) {
-  await sharp(`${SRC}/${job.input}`)
-    .resize(job.width, job.height, { fit: 'cover' })
-    .webp({ quality: 78 })
-    .toFile(`${OUT}/${job.output}`);
-  console.log(`${OUT}/${job.output}`);
+// Fleet: product shots cropped from the owner's fleet mockup (7.jpg, 1376×768).
+const FLEET = {
+  'fleet-50.webp': { left: 200, top: 248, width: 360, height: 236 },
+  'fleet-125.webp': { left: 845, top: 248, width: 355, height: 236 },
+};
+for (const [file, region] of Object.entries(FLEET)) {
+  await sharp(`${SRC}/7.jpg`).extract(region).resize(640, 440, { fit: 'cover' }).webp({ quality: 82 }).toFile(`${OUT}/${file}`);
 }
 
-await sharp(`${SRC}/hero.jpg`).resize(1200, 630, { fit: 'cover' }).jpeg({ quality: 82 }).toFile('site/og-image.jpg');
 await sharp('site/favicon.svg').resize(180, 180).png().toFile('site/apple-touch-icon.png');
-console.log('site/og-image.jpg\nsite/apple-touch-icon.png');
+console.log('images built');

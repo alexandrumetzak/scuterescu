@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 56" role="img" aria-label="Scuterescu">
+  <title>Scuterescu</title>
+  <g transform="translate(4,4) scale(1.5)" fill="none" stroke="#F5F5F4" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="24" r="6.2"/>
+    <circle cx="33" cy="24" r="6.2"/>
+    <path d="M2.5,24 C2.5,17.5 7,14 12,14.5 C12,12.5 12.5,11.3 14,11.2 L24,10.8 C26.5,11 27.5,13.5 27,16.5 C26.8,18.5 27.5,20 29,21"/>
+    <path d="M29,21 C29.3,16 30,10.5 31,7"/>
+    <path d="M25,7.8 Q31,6.6 37,6.3"/>
+    <path d="M36,6.5 L38.5,4"/>
+    <path d="M26.8,24 C26.8,19 29.5,16.3 33,16.3 C36.5,16.3 39.2,19 39.2,24"/>
+    <circle cx="29.5" cy="19.5" r="1.1" fill="#F5F5F4" stroke="none"/>
+  </g>
+  <text x="82" y="40" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="34" letter-spacing="-0.02em"><tspan fill="#F97316">S</tspan><tspan fill="#F5F5F4">cuterescu</tspan><tspan fill="#F97316">.</tspan></text>
+</svg>

@@ -18,16 +18,26 @@ test('every <img> exists and has alt, width, height', () => {
   }
 });
 
-test('srcset, icons and og image exist', () => {
-  for (const f of ['site/assets/img/hero.webp', 'site/assets/img/hero-800.webp', 'site/og-image.jpg', 'site/favicon.svg', 'site/apple-touch-icon.png']) {
+test('design assets exist', () => {
+  for (const f of ['site/assets/img/hero.webp', 'site/assets/img/hero-800.webp', 'site/assets/img/fleet-50.webp',
+    'site/assets/img/fleet-125.webp', 'site/assets/img/logo.svg', 'site/og-image.jpg', 'site/favicon.svg',
+    'site/apple-touch-icon.png']) {
     assert.ok(exists(f), `missing ${f}`);
   }
 });
 
-test('image credits list every photo', () => {
+test('logo is an accessible SVG without external references', () => {
+  const svg = read('site/assets/img/logo.svg');
+  assert.match(svg, /^<svg[^>]*viewBox="/);
+  assert.ok(svg.includes('<title>Scuterescu</title>'));
+  assert.ok(svg.includes('#F97316'));
+  assert.ok(!/https?:\/\/(?!www\.w3\.org)/.test(svg), 'no external references');
+});
+
+test('image credits describe every image source', () => {
   const credits = read('site/assets/img/CREDITS.md');
-  for (const f of ['hero.jpg', 'scuter-50.jpg', 'scuter-125.jpg']) {
+  for (const f of ['hero.webp', 'fleet-50.webp', 'fleet-125.webp', 'logo.svg']) {
     assert.ok(credits.includes(f), `CREDITS.md missing ${f}`);
   }
-  assert.ok(/unsplash\.com|pexels\.com/.test(credits), 'credits must link the source');
+  assert.ok(credits.includes('proprietar'), 'credits must state the images come from the owner');
 });
