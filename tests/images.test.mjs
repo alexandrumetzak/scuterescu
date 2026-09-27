@@ -1,7 +1,8 @@
 import path from 'node:path';
+import { statSync } from 'node:fs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { read, exists, imgTags } from './helpers.mjs';
+import { read, exists, imgTags, ROOT } from './helpers.mjs';
 
 const PAGES = ['site/index.html', 'site/en/index.html'];
 
@@ -37,8 +38,15 @@ test('logo is an accessible SVG without external references', () => {
 
 test('image credits describe every image source', () => {
   const credits = read('site/assets/img/CREDITS.md');
-  for (const f of ['hero.webp', 'fleet-50.webp', 'fleet-125.webp', 'logo.svg']) {
+  for (const f of ['hero.webp', 'fleet-50.webp', 'fleet-125.webp', 'logo.svg', 'logo-icon.svg']) {
     assert.ok(credits.includes(f), `CREDITS.md missing ${f}`);
   }
   assert.ok(credits.includes('proprietar'), 'credits must state the images come from the owner');
+});
+
+test('traced logo SVGs are small enough to inline in every page header', () => {
+  const iconSize = statSync(path.join(ROOT, 'site/assets/img/logo-icon.svg')).size;
+  const logoSize = statSync(path.join(ROOT, 'site/assets/img/logo.svg')).size;
+  assert.ok(iconSize < 8000, `logo-icon.svg is ${iconSize} bytes, expected < 8000`);
+  assert.ok(logoSize < 16000, `logo.svg is ${logoSize} bytes, expected < 16000`);
 });

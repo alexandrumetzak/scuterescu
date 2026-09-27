@@ -4,7 +4,9 @@
 // The icon is TRACED from the owner's actual artwork (not hand-drawn): sharp crops the icon region,
 // upscales and thresholds it to a clean black-on-white line drawing, then potrace vectorizes it into
 // one filled path (the ink of the strokes becomes the fill, so evenodd keeps the strokes' interiors
-// transparent).
+// transparent). The traced path is kept small (well under 8 KB) since the icon is inlined in every
+// page header: a modest upscale factor, a looser potrace optTolerance, 1-decimal coordinate rounding,
+// and a final svgo pass all trade a little tracing precision (invisible at 48-200px) for file size.
 //
 // The wordmark is outlined to real vector paths with opentype.js reading the Inter 800 (ExtraBold)
 // WOFF shipped by @fontsource/inter, so logo.svg renders identically everywhere it is used as an
@@ -12,6 +14,7 @@
 import sharp from 'sharp';
 import potraceModule from 'potrace';
 import opentypeModule from 'opentype.js';
+import { optimize } from 'svgo';
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const potrace = potraceModule.default ?? potraceModule;
@@ -26,11 +29,31 @@ function traceToSvgPath(buffer, options) {
   });
 }
 
+// Rounds every numeric coordinate in a path's "d" string to 1 decimal place, shrinking potrace's
+// default 2-3 decimal output with no visible effect at the sizes this icon is ever rendered at.
+function roundPathData(d, decimals = 1) {
+  const factor = 10 ** decimals;
+  return d.replace(/-?\d+\.?\d*/g, (n) => String(Math.round(parseFloat(n) * factor) / factor));
+}
+
+function optimizeSvg(svg) {
+  const result = optimize(svg, {
+    multipass: true,
+    plugins: [
+      { name: 'preset-default', params: { overrides: { removeUnknownsAndDefaults: false, convertColors: false } } },
+    ],
+    js2svg: { pretty: false },
+    floatPrecision: 1,
+    path: { floatPrecision: 1 },
+  });
+  return result.data;
+}
+
 // --- 1. Trace the owner's scooter icon out of images-src/design/1.jpg ---
 const DESIGN_SRC = 'images-src/design/1.jpg';
 // Tight crop around the icon (left of the "Scuterescu." wordmark), verified by viewing the crop.
 const ICON_CROP = { left: 58, top: 218, width: 180, height: 135 };
-const UPSCALE = 6;
+const UPSCALE = 3; // kept small (icon is inlined on every page); 4-6x added file size with no visible gain
 
 const preprocessed = await sharp(DESIGN_SRC)
   .extract(ICON_CROP)
@@ -46,23 +69,23 @@ const trimmed = await sharp(preprocessed).trim().png().toBuffer({ resolveWithObj
 const iconPxWidth = trimmed.info.width;
 const iconPxHeight = trimmed.info.height;
 
-const tracedSvg = await traceToSvgPath(trimmed.data, { threshold: 128, turdSize: 20, optTolerance: 0.4 });
+const tracedSvg = await traceToSvgPath(trimmed.data, { threshold: 128, turdSize: 20, optTolerance: 1.0 });
 const pathMatch = tracedSvg.match(/<path[^>]*\sd="([^"]+)"/);
 if (!pathMatch) {
   throw new Error('potrace produced no <path> element — inspect the preprocessed PNG and re-tune threshold/blur.');
 }
-const ICON_PATH_D = pathMatch[1];
+const ICON_PATH_D = roundPathData(pathMatch[1]);
 
 // logo-icon.svg: the traced icon alone, tight viewBox in the upscaled-pixel coordinate system.
-writeFileSync(
-  'site/assets/img/logo-icon.svg',
+const logoIconSvg = optimizeSvg(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${iconPxWidth} ${iconPxHeight}" role="img" aria-label="Scuterescu">
   <title>Scuterescu</title>
   <path fill="#F5F5F4" fill-rule="evenodd" d="${ICON_PATH_D}"/>
 </svg>
 `
 );
-console.log('site/assets/img/logo-icon.svg');
+writeFileSync('site/assets/img/logo-icon.svg', logoIconSvg);
+console.log('site/assets/img/logo-icon.svg', `${logoIconSvg.length} bytes`);
 
 // --- 2. Outline the "Scuterescu." wordmark with opentype.js ---
 const FONT_PATH = 'node_modules/@fontsource/inter/files/inter-latin-800-normal.woff';
@@ -87,7 +110,13 @@ for (const ch of TEXT) {
 }
 const wordmarkWidth = cursor - TRACKING; // drop the trailing tracking after the last glyph
 
-const capHeightUnits = font.tables.os2?.sCapHeight || font.charToGlyph('S').getPath(0, 0, font.unitsPerEm).getBoundingBox().y2 * -1;
+const capHeightUnits = font.tables.os2?.sCapHeight;
+if (!capHeightUnits) {
+  throw new Error(
+    "Inter's OS/2 table has no sCapHeight — cannot size the icon relative to the wordmark's cap height. " +
+      'Inspect font.tables.os2 and either fix this font file or compute cap height from a glyph bounding box explicitly.'
+  );
+}
 const capHeightPx = capHeightUnits * (FONT_SIZE / font.unitsPerEm);
 
 // --- 3. Lay out icon + wordmark: icon height ~= 1.1x cap height, gap ~= 0.25x icon height,
@@ -123,8 +152,7 @@ const viewBox = {
   height: contentBottom - contentTop + PAD * 2,
 };
 
-writeFileSync(
-  'site/assets/img/logo.svg',
+const logoSvg = optimizeSvg(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox.minX.toFixed(2)} ${viewBox.minY.toFixed(2)} ${viewBox.width.toFixed(2)} ${viewBox.height.toFixed(2)}" role="img" aria-label="Scuterescu">
   <title>Scuterescu</title>
   <g transform="translate(${iconLeftX},${iconTopY.toFixed(2)}) scale(${ICON_SCALE.toFixed(4)})">
@@ -136,4 +164,5 @@ writeFileSync(
 </svg>
 `
 );
-console.log('site/assets/img/logo.svg');
+writeFileSync('site/assets/img/logo.svg', logoSvg);
+console.log('site/assets/img/logo.svg', `${logoSvg.length} bytes`);
