@@ -24,6 +24,7 @@
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../apple-touch-icon.png">
   <link rel="preload" href="../assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../assets/fonts/inter-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="../assets/img/hero-800.webp" as="image" type="image/webp" imagesrcset="../assets/img/hero-800.webp 800w, ../assets/img/hero.webp 1024w" imagesizes="100vw" fetchpriority="high">
   <link rel="stylesheet" href="../assets/css/style.css">
   <script type="application/ld+json">
@@ -125,7 +126,7 @@
             </div>
             <div class="hero__mini">
               <p class="hero__mini-title">125cc</p>
-              <p class="hero__mini-line">Licence A1 / A / B (24+)</p>
+              <p class="hero__mini-line">Licence A1 / A, or B (24+ and course)</p>
               <p class="hero__mini-line">Voge SR125 ADV</p>
               <p class="hero__mini-price">from 50 RON/day</p>
             </div>
@@ -146,7 +147,7 @@
           <li class="feature glass">
             <div class="feature__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div>
             <h3>Zero hidden costs</h3>
-            <p>RCA insurance included, 24/7 roadside assistance and unlimited kilometres. You know exactly what you pay from the start.</p>
+            <p>RCA (third-party liability) insurance included, 24/7 roadside assistance and unlimited kilometres. You know exactly what you pay from the start.</p>
           </li>
           <li class="feature glass">
             <div class="feature__icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h.01M3 11l8-8h8a2 2 0 0 1 2 2v8l-8 8a2 2 0 0 1-2.8 0l-7.2-7.2a2 2 0 0 1 0-2.8z"/></svg></div>
@@ -191,7 +192,7 @@
               <h3>Voge SR125 ADV (125cc)</h3>
               <p class="card__models">Also available: SYM Jet 4 RX 125</p>
               <ul class="card__meta">
-                <li>Category A1, A or B licence (minimum age 24 and course)</li>
+                <li>Category A1 or A licence, or category B (minimum age 24 and the required course)</li>
                 <li>Liquid-cooled 125cc engine with front-rear ABS</li>
                 <li>Tall, adjustable windscreen</li>
                 <li>ADV suspension with dual gas shocks</li>
@@ -216,7 +217,7 @@
             </div>
             <ul class="tariff__bullets">
               <li>Helmet included</li>
-              <li>RCA insurance</li>
+              <li>RCA (third-party liability) insurance</li>
               <li>Anti-theft system</li>
             </ul>
             <a class="btn btn--call" href="https://wa.me/40756205206?text=Hi!%20I%20would%20like%20to%20book%20the%201%E2%80%932%20days%20package%20(50cc%3A%2090%20RON%2Fday%2C%20125cc%3A%20100%20RON%2Fday).%0AScooter%20(50cc%20or%20125cc)%3A%20%0APeriod%3A%20">Book</a>
@@ -271,8 +272,8 @@
       <div class="container">
         <h2 class="section__title" id="booking-title">Book online<span class="dot">.</span></h2>
         <p class="section__lead">Fill in the details, we confirm on WhatsApp</p>
-        <div class="booking">
-          <form id="booking-form" data-lang="en" novalidate>
+        <div class="booking" hidden>
+          <form id="booking-form" data-lang="en" method="post" action="#" novalidate>
             <div class="booking-step glass">
               <div class="booking-step__head">
                 <h3>Choose the period</h3>
@@ -281,13 +282,14 @@
               <div class="field-row">
                 <div class="field">
                   <label for="start">Pick-up date</label>
-                  <input type="date" id="start" name="start" required>
+                  <input type="date" id="start" name="start" required aria-describedby="booking-date-error">
                 </div>
                 <div class="field">
                   <label for="end">Return date</label>
-                  <input type="date" id="end" name="end" required>
+                  <input type="date" id="end" name="end" required aria-describedby="booking-date-error">
                 </div>
               </div>
+              <p id="booking-date-error" class="field-error" role="alert"></p>
               <div class="field-row">
                 <div class="field">
                   <label for="pickupTime">Pick-up time</label>
@@ -337,7 +339,7 @@
               </div>
               <div class="checkbox-field">
                 <input type="checkbox" id="phoneHolder" name="phoneHolder">
-                <label for="phoneHolder">Phone holder (+10 RON)</label>
+                <label for="phoneHolder">Phone holder <span data-phone-holder-price>(+10 RON)</span></label>
               </div>
               <div class="field">
                 <label for="name">Name (optional)</label>
@@ -345,24 +347,27 @@
               </div>
             </div>
 
-            <noscript><p>Enable JavaScript to calculate the price automatically, or message us directly on <a href="https://wa.me/40756205206?text=Hi!%20I%20would%20like%20to%20rent%20a%20scooter.%20Period%3A%20">WhatsApp</a>.</p></noscript>
           </form>
 
-          <aside class="booking-summary glass" id="booking-summary" aria-live="polite">
+          <aside class="booking-summary glass" id="booking-summary">
             <h3>Booking summary</h3>
-            <dl>
-              <div class="summary-row"><dt>Period</dt><dd id="summary-period">Choose the period to see the total.</dd></div>
-              <div class="summary-row"><dt>Scooter</dt><dd id="summary-scooter">–</dd></div>
-              <div class="summary-row"><dt>Rate</dt><dd id="summary-rate">–</dd></div>
-              <div class="summary-row"><dt>Extras</dt><dd id="summary-extras">–</dd></div>
-              <div class="summary-row summary-row--total"><dt>Estimated total</dt><dd id="booking-total">–</dd></div>
-              <div class="summary-row"><dt>Refundable deposit</dt><dd id="summary-deposit">–</dd></div>
-            </dl>
+            <div aria-live="polite">
+              <dl>
+                <div class="summary-row"><dt>Period</dt><dd id="summary-period">Choose your dates to see the total.</dd></div>
+                <div class="summary-row"><dt>Scooter</dt><dd id="summary-scooter">–</dd></div>
+                <div class="summary-row"><dt>Rate</dt><dd id="summary-rate">–</dd></div>
+                <div class="summary-row"><dt>Extras</dt><dd id="summary-extras">–</dd></div>
+                <div class="summary-row summary-row--total"><dt>Estimated total</dt><dd id="booking-total">–</dd></div>
+                <div class="summary-row"><dt>Refundable deposit</dt><dd id="summary-deposit">–</dd></div>
+              </dl>
+            </div>
             <p id="booking-error" role="alert"></p>
             <button class="btn btn--call btn--block" type="submit" form="booking-form">Send the booking on WhatsApp</button>
             <p class="booking-note">The booking is confirmed on WhatsApp, subject to availability.</p>
+            <a id="booking-fallback" class="booking-fallback" href="https://wa.me/40756205206?text=Hi!%20I%20would%20like%20to%20rent%20a%20scooter.%20Period%3A%20" hidden>If WhatsApp didn't open, tap here.</a>
           </aside>
         </div>
+        <noscript><p>Enable JavaScript to calculate the price automatically, or message us directly on <a href="https://wa.me/40756205206?text=Hi!%20I%20would%20like%20to%20rent%20a%20scooter.%20Period%3A%20">WhatsApp</a>.</p></noscript>
       </div>
     </section>
 
@@ -384,7 +389,7 @@
           <li>Minimum age: 18 (24 for 125cc with a B licence)</li>
           <li>ID card or passport</li>
           <li>50cc scooter: category AM or B licence</li>
-          <li>125cc scooter: category A1, A or B licence (minimum age 24 and course)</li>
+          <li>125cc scooter: category A1 or A licence, or category B (minimum age 24 and the required course)</li>
           <li>Deposit: 300 RON (50cc) or 350 RON (125cc)</li>
           <li>Included: helmet, RCA insurance, anti-theft system, 24/7 assistance, unlimited kilometres</li>
           <li>Extras: extra helmet 20 RON, phone holder 10 RON</li>

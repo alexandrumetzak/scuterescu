@@ -24,6 +24,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/hero-800.webp" as="image" type="image/webp" imagesrcset="assets/img/hero-800.webp 800w, assets/img/hero.webp 1024w" imagesizes="100vw" fetchpriority="high">
   <link rel="stylesheet" href="assets/css/style.css">
   <script type="application/ld+json">
@@ -125,7 +126,7 @@
             </div>
             <div class="hero__mini">
               <p class="hero__mini-title">125cc</p>
-              <p class="hero__mini-line">Permis A1 / A / B (24+ ani)</p>
+              <p class="hero__mini-line">Permis A1 / A, sau B (24+ ani și curs)</p>
               <p class="hero__mini-line">Voge SR125 ADV</p>
               <p class="hero__mini-price">de la 50 RON/zi</p>
             </div>
@@ -191,7 +192,7 @@
               <h3>Voge SR125 ADV (125cc)</h3>
               <p class="card__models">Disponibil și: SYM Jet 4 RX 125</p>
               <ul class="card__meta">
-                <li>Permis categoria A1, A sau B (minimum 24 de ani și curs)</li>
+                <li>Permis categoria A1 sau A, ori categoria B (minimum 24 de ani și curs)</li>
                 <li>Motor 125cc răcit cu lichid și ABS față-spate</li>
                 <li>Parbriz înalt reglabil</li>
                 <li>Suspensie ADV cu amortizoare duble pe gaz</li>
@@ -271,8 +272,8 @@
       <div class="container">
         <h2 class="section__title" id="rezervare-titlu">Rezervă online<span class="dot">.</span></h2>
         <p class="section__lead">Completezi detaliile, noi confirmăm pe WhatsApp</p>
-        <div class="booking">
-          <form id="booking-form" data-lang="ro" novalidate>
+        <div class="booking" hidden>
+          <form id="booking-form" data-lang="ro" method="post" action="#" novalidate>
             <div class="booking-step glass">
               <div class="booking-step__head">
                 <h3>Alege perioada</h3>
@@ -281,13 +282,14 @@
               <div class="field-row">
                 <div class="field">
                   <label for="start">Data de ridicare</label>
-                  <input type="date" id="start" name="start" required>
+                  <input type="date" id="start" name="start" required aria-describedby="booking-date-error">
                 </div>
                 <div class="field">
                   <label for="end">Data de predare</label>
-                  <input type="date" id="end" name="end" required>
+                  <input type="date" id="end" name="end" required aria-describedby="booking-date-error">
                 </div>
               </div>
+              <p id="booking-date-error" class="field-error" role="alert"></p>
               <div class="field-row">
                 <div class="field">
                   <label for="pickupTime">Ora ridicare</label>
@@ -337,7 +339,7 @@
               </div>
               <div class="checkbox-field">
                 <input type="checkbox" id="phoneHolder" name="phoneHolder">
-                <label for="phoneHolder">Suport telefon (+10 RON)</label>
+                <label for="phoneHolder">Suport telefon <span data-phone-holder-price>(+10 RON)</span></label>
               </div>
               <div class="field">
                 <label for="name">Nume (opțional)</label>
@@ -345,24 +347,27 @@
               </div>
             </div>
 
-            <noscript><p>Activează JavaScript pentru a calcula prețul automat, sau scrie-ne direct pe <a href="https://wa.me/40756205206?text=Bun%C4%83!%20A%C8%99%20dori%20s%C4%83%20%C3%AEnchiriez%20un%20scuter.%20Perioada%3A%20">WhatsApp</a>.</p></noscript>
           </form>
 
-          <aside class="booking-summary glass" id="booking-summary" aria-live="polite">
+          <aside class="booking-summary glass" id="booking-summary">
             <h3>Rezumat rezervare</h3>
-            <dl>
-              <div class="summary-row"><dt>Perioadă</dt><dd id="summary-period">Alege perioada pentru a vedea totalul.</dd></div>
-              <div class="summary-row"><dt>Scuter</dt><dd id="summary-scooter">–</dd></div>
-              <div class="summary-row"><dt>Tarif</dt><dd id="summary-rate">–</dd></div>
-              <div class="summary-row"><dt>Opțiuni</dt><dd id="summary-extras">–</dd></div>
-              <div class="summary-row summary-row--total"><dt>Total estimat</dt><dd id="booking-total">–</dd></div>
-              <div class="summary-row"><dt>Garanție returnabilă</dt><dd id="summary-deposit">–</dd></div>
-            </dl>
+            <div aria-live="polite">
+              <dl>
+                <div class="summary-row"><dt>Perioadă</dt><dd id="summary-period">Alege perioada pentru a vedea totalul.</dd></div>
+                <div class="summary-row"><dt>Scuter</dt><dd id="summary-scooter">–</dd></div>
+                <div class="summary-row"><dt>Tarif</dt><dd id="summary-rate">–</dd></div>
+                <div class="summary-row"><dt>Opțiuni</dt><dd id="summary-extras">–</dd></div>
+                <div class="summary-row summary-row--total"><dt>Total estimat</dt><dd id="booking-total">–</dd></div>
+                <div class="summary-row"><dt>Garanție returnabilă</dt><dd id="summary-deposit">–</dd></div>
+              </dl>
+            </div>
             <p id="booking-error" role="alert"></p>
             <button class="btn btn--call btn--block" type="submit" form="booking-form">Trimite rezervarea pe WhatsApp</button>
             <p class="booking-note">Rezervarea se confirmă pe WhatsApp, în funcție de disponibilitate.</p>
+            <a id="booking-fallback" class="booking-fallback" href="https://wa.me/40756205206?text=Bun%C4%83!%20A%C8%99%20dori%20s%C4%83%20%C3%AEnchiriez%20un%20scuter.%20Perioada%3A%20" hidden>Dacă WhatsApp nu s-a deschis, apasă aici.</a>
           </aside>
         </div>
+        <noscript><p>Activează JavaScript pentru a calcula prețul automat, sau scrie-ne direct pe <a href="https://wa.me/40756205206?text=Bun%C4%83!%20A%C8%99%20dori%20s%C4%83%20%C3%AEnchiriez%20un%20scuter.%20Perioada%3A%20">WhatsApp</a>.</p></noscript>
       </div>
     </section>
 
@@ -384,7 +389,7 @@
           <li>Vârsta minimă: 18 ani (24 pentru 125cc cu permis B)</li>
           <li>Carte de identitate sau pașaport</li>
           <li>Scuter 50cc: permis categoria AM sau B</li>
-          <li>Scuter 125cc: permis categoria A1, A sau B (minimum 24 de ani și curs)</li>
+          <li>Scuter 125cc: permis categoria A1 sau A, ori categoria B (minimum 24 de ani și curs)</li>
           <li>Garanție: 300 RON (50cc) sau 350 RON (125cc)</li>
           <li>Incluse: cască, RCA, antifurt, asistență 24/7, kilometri nelimitați</li>
           <li>Opțiuni: cască suplimentară 20 RON, suport telefon 10 RON</li>

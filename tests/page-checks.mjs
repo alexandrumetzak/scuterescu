@@ -41,6 +41,8 @@ export function checkHomePage(t, { file, lang, canonical, alternate, waLinks, fa
     }
     assert.ok(!/ş|ţ|Ş|Ţ/.test(html), 'cedilla diacritics found; use ș ț');
     assert.ok(!/cameră de bord|camera de bord|dashcam|dash cam/i.test(body), 'dashcam claim must not appear');
+    assert.ok(!/garantat/i.test(body), '"garantat" claim must not appear');
+    assert.ok(!/5 minute\b|5 minutes\b/i.test(body), '"5 minute(s)" claim must not appear');
     for (const old of ['70 RON', '80 RON/zi', '80 RON/day']) assert.ok(!body.includes(old), `old price "${old}" still on page`);
   });
 
@@ -69,18 +71,22 @@ export function checkHomePage(t, { file, lang, canonical, alternate, waLinks, fa
 
   t.test('booking form contract', () => {
     assert.ok(html.includes(`id="${bookingId}"`), 'booking section');
-    assert.ok(html.includes(`<form id="booking-form" data-lang="${lang}" novalidate>`));
+    assert.ok(html.includes(`<form id="booking-form" data-lang="${lang}" method="post" action="#" novalidate>`));
+    assert.ok(html.includes('<div class="booking" hidden>'), 'booking wrapper must be hidden without JS');
     for (const n of ['start', 'end', 'pickupTime', 'returnTime', 'extraHelmet', 'phoneHolder', 'name']) {
       assert.match(html, new RegExp(`name="${n}"`), `missing input ${n}`);
     }
     assert.match(html, /name="category" value="50"[^>]*checked/);
     assert.match(html, /name="category" value="125"/);
-    for (const id of ['booking-summary', 'booking-total', 'booking-error']) assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
+    for (const id of ['booking-summary', 'booking-total', 'booking-error', 'booking-date-error', 'booking-fallback']) {
+      assert.ok(html.includes(`id="${id}"`), `missing #${id}`);
+    }
     assert.ok(html.includes('aria-live="polite"'));
     assert.ok(html.includes('<noscript>'));
     assert.match(html, /<script type="module" src="(\.\.\/)?assets\/js\/booking\.js"><\/script>/);
     assert.match(html, /data-select-category="50"/);
     assert.match(html, /data-select-category="125"/);
+    assert.ok(html.includes('data-phone-holder-price'), 'phone-holder price suffix must be in its own span');
     const labels = (html.match(/<label\b/g) || []).length;
     assert.ok(labels >= 9, `every booking input needs a label (found ${labels})`);
   });

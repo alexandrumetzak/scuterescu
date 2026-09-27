@@ -4,6 +4,11 @@ import { rentalDays, quote, tierLabel, buildBookingMessage, waLink, CATEGORIES, 
 const form = document.getElementById('booking-form');
 
 if (form) {
+  // Rendered hidden in the HTML so a no-JS visitor never sees a form that
+  // silently leaks its fields into the URL on submit (see <noscript> instead).
+  const wrapper = document.querySelector('.booking');
+  if (wrapper) wrapper.hidden = false;
+
   const lang = form.dataset.lang === 'en' ? 'en' : 'ro';
   const T = {
     ro: {
@@ -41,13 +46,25 @@ if (form) {
     total: document.getElementById('booking-total'),
     deposit: document.getElementById('summary-deposit'),
     error: document.getElementById('booking-error'),
+    dateError: document.getElementById('booking-date-error'),
   };
   const phoneHolderBox = $('[name="phoneHolder"]');
+  const phoneHolderPrice = $('[data-phone-holder-price]');
   const startInput = $('[name="start"]');
   const endInput = $('[name="end"]');
-  const today = new Date().toISOString().slice(0, 10);
-  startInput.min = today;
-  endInput.min = today;
+  const fallbackLink = document.getElementById('booking-fallback');
+
+  // "Today" in the timezone the business operates in (Europe/Bucharest), not
+  // the visitor's or the server's UTC day — matters right around midnight.
+  const todayIso = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Bucharest' }).format(new Date());
+  const setDateMin = () => {
+    const min = todayIso();
+    startInput.min = min;
+    endInput.min = min;
+  };
+  setDateMin();
+  startInput.addEventListener('focus', setDateMin);
+  endInput.addEventListener('focus', setDateMin);
 
   // The user's own phone-holder choice, tracked separately from the checkbox's
   // displayed state so that an auto-check at 7+ days doesn't stick once the
@@ -68,6 +85,7 @@ if (form) {
   });
 
   const validate = (v) => {
+    const today = todayIso();
     if (!v.start || !v.end) return T.missing;
     if (v.start < today) return T.past;
     if (rentalDays(v.start, v.end) === null) return T.order;
@@ -87,6 +105,7 @@ if (form) {
       out.total.textContent = '–';
       phoneHolderBox.disabled = false;
       phoneHolderBox.checked = phoneHolderChosen;
+      phoneHolderPrice.textContent = `(+${EXTRAS.phoneHolder} RON)`;
       return;
     }
     const q = quote({ category: v.category, days, extraHelmet: v.extraHelmet, phoneHolder: v.phoneHolder });
@@ -97,6 +116,7 @@ if (form) {
       phoneHolderBox.disabled = false;
       phoneHolderBox.checked = phoneHolderChosen;
     }
+    phoneHolderPrice.textContent = q.phoneHolderIncluded ? `(${T.included})` : `(+${EXTRAS.phoneHolder} RON)`;
     const extras = [];
     if (v.extraHelmet) extras.push(`${T.helmet} (+${EXTRAS.helmet} RON)`);
     if (q.phoneHolderIncluded) extras.push(`${T.phoneHolder} (${T.included})`);
@@ -113,12 +133,12 @@ if (form) {
   };
   const markFieldError = (input) => {
     input.setAttribute('aria-invalid', 'true');
-    input.setAttribute('aria-describedby', 'booking-error');
+    input.setAttribute('aria-describedby', 'booking-date-error');
   };
 
   form.addEventListener('input', (e) => {
     if (e.target === phoneHolderBox && !phoneHolderBox.disabled) phoneHolderChosen = phoneHolderBox.checked;
-    out.error.textContent = '';
+    out.dateError.textContent = '';
     clearFieldError(startInput);
     clearFieldError(endInput);
     render();
@@ -128,7 +148,7 @@ if (form) {
     e.preventDefault();
     const v = values();
     const error = validate(v);
-    out.error.textContent = error;
+    out.dateError.textContent = error;
     clearFieldError(startInput);
     clearFieldError(endInput);
     if (error) {
@@ -136,14 +156,18 @@ if (form) {
       if (!v.start) { markFieldError(startInput); focusTarget = startInput; }
       if (!v.end) { markFieldError(endInput); focusTarget = focusTarget || endInput; }
       if (v.start && v.end) {
-        const field = v.start < today ? startInput : endInput;
+        const field = v.start < todayIso() ? startInput : endInput;
         markFieldError(field);
         focusTarget = field;
       }
+      focusTarget.scrollIntoView({ block: 'center', behavior: 'auto' });
       focusTarget.focus();
       return;
     }
-    window.open(waLink(buildBookingMessage(lang, v)), '_blank', 'noopener');
+    const url = waLink(buildBookingMessage(lang, v));
+    fallbackLink.href = url;
+    fallbackLink.hidden = false;
+    window.location.href = url;
   });
 
   // "Alege 50cc / 125cc" buttons in the fleet section preselect the scooter.
